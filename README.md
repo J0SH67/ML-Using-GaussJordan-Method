@@ -10,7 +10,9 @@ Faculty of Computing Engineering and Technology  — Department of Civil Enginee
 [![License](https://img.shields.io/badge/License-Academic%20Use-blue?style=for-the-badge)](#)
 
 ---
-
+## 👥 Instructor
+* **Engr. Samuel Erespe**
+  
 ## 👥 Proponents & Contributors
 * **John Joshua D. Ilisan**
 * **Darius Lape**
