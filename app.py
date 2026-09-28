@@ -85,7 +85,7 @@ st.markdown(
 # -----------------------------------------------------------------------------
 with st.sidebar:
     st.title("Project Info")
-    st.markdown("**Institution:** Davao Oriental State University")
+    st.markdown("**Institution:** Faculty of Computing, Engineering, and Technology")
     st.markdown("**Department:** Civil Engineering")
     st.markdown("**Core Method:** Gauss-Jordan Elimination")
     st.markdown("**ML Framework:** Multiple Linear Regression (OLS)")
