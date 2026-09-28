@@ -14,12 +14,7 @@ sub = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
 # HELPER: VARIANCE INFLATION FACTOR (multicollinearity check)
 # -----------------------------------------------------------------------------
 def compute_vif(X, feature_names):
-    """VIF_i measures how well predictor i is explained by the *other*
-    predictors. VIF > 5-10 signals problematic multicollinearity -- e.g.
-    cement content and water-cement ratio are physically linked in real mix
-    design, so this is worth checking before trusting individual beta
-    values. Reuses the project's own regression class rather than a library
-    stats routine."""
+    """VIF_i measures how well predictor i is explained by the other predictors."""
     X = np.array(X, dtype=float)
     vifs = []
     for i in range(X.shape[1]):
@@ -34,6 +29,7 @@ def compute_vif(X, feature_names):
         vif = float("inf") if r2 > 0.9999 else 1.0 / (1.0 - r2)
         vifs.append(vif)
     return pd.DataFrame({"Predictor": feature_names, "VIF": vifs})
+
 
 # -----------------------------------------------------------------------------
 # 1. PAGE SETUP & METADATA
@@ -77,7 +73,7 @@ st.markdown(
         border-left: 6px solid #f59e0b;
         padding: 20px 24px;
         border-radius: 10px;
-        margin-bottom: 24px;
+        margin-bottom: 16px;
     }
     </style>
 """,
@@ -89,13 +85,14 @@ st.markdown(
 # -----------------------------------------------------------------------------
 with st.sidebar:
     st.title("Project Info")
+    st.markdown("**Institution:** Davao Oriental State University")
     st.markdown("**Department:** Civil Engineering")
     st.markdown("**Core Method:** Gauss-Jordan Elimination")
-    st.markdown("**ML Model:** Multiple Linear Regression (OLS)")
+    st.markdown("**ML Framework:** Multiple Linear Regression (OLS)")
 
     st.divider()
 
-    st.subheader("👥 Group Members")
+    st.subheader("👥 Proponents")
     st.markdown("• **John Joshua D. Ilisan**")
     st.markdown("• **Darius Lape**")
     st.markdown("• **Briel Jan M. Lacia**")
@@ -104,20 +101,65 @@ with st.sidebar:
     st.caption("Engineered for offline and online structural analysis.")
 
 # -----------------------------------------------------------------------------
-# 4. TOP HERO BANNER
+# 4. TOP HERO BANNER & APPLICATION OVERVIEW
 # -----------------------------------------------------------------------------
 st.markdown(
     """
     <div class="hero-banner">
-        <h2 style="margin: 0; color: #F8FAFC;">Numerical Solver & ML Engine</h2>
-        <p style="margin: 6px 0 10px 0; color: #94A3B8;">Gauss-Jordan Elimination with Partial Pivoting.</p>
+        <h2 style="margin: 0; color: #F8FAFC;">Concrete Compressive Strength Predictor & Linear Systems Solver</h2>
+        <p style="margin: 6px 0 10px 0; color: #94A3B8;">
+            Supervised Machine Learning via Custom Gauss-Jordan Elimination with Scale-Aware Partial Pivoting.
+        </p>
         <p style="margin: 0; font-size: 0.9rem; color: #F59E0B;">
-            <strong>Proponents:</strong> John Joshua D. Ilisan | Darius Lape | Briel Jan M. Lacia
+            <strong>Proponents:</strong> John Joshua D. Ilisan | Darius Lape | Briel Jan M. Lacia &nbsp;|&nbsp; <em>September 2026</em>
         </p>
     </div>
 """,
     unsafe_allow_html=True,
 )
+
+with st.expander("📖 About This Application & Engineering Methodology", expanded=False):
+    col_desc1, col_desc2 = st.columns(2)
+    with col_desc1:
+        st.markdown("### Civil Engineering Problem")
+        st.markdown(
+            "In structural design and construction quality assurance, assessing the **28-day compressive strength** "
+            "of concrete is the standard measure of mix adequacy. Conventionally, this requires preparing cylinder "
+            "specimens and curing them in water tanks for nearly a month before conducting destructive testing on a "
+            "**Universal Testing Machine (UTM)**."
+        )
+        st.markdown(
+            "This application provides an early screening model to predict compressive strength directly from batch mix "
+            "proportions (**Cement Content**, **Water-Cement Ratio**, and **Curing Age**) before casting."
+        )
+
+    with col_desc2:
+        st.markdown("### First-Principles Numerical Engine")
+        st.markdown(
+            "Rather than treating Machine Learning as a 'black box' via libraries like Scikit-Learn, this platform is "
+            "engineered completely from scratch:"
+        )
+        st.markdown(
+            "• **Custom Gauss-Jordan Solver:** Implements scale-aware partial pivoting to avoid division by zero and "
+            "suppress floating-point roundoff drift.\n"
+            "• **Normal Equations Architecture:** Minimizes squared error by solving $(X^T X)\\beta = X^T y$ directly.\n"
+            "• **Rigorous Validation:** Includes standard error hypothesis tests ($t$-statistics, $p$-values) and "
+            "**Leave-One-Out Cross-Validation (LOOCV)** for honest generalizability assessment."
+        )
+
+    st.divider()
+    st.markdown("### How to Use This Platform")
+    c_tab1, c_tab2 = st.columns(2)
+    with c_tab1:
+        st.info(
+            "**🔢 Tab 1: Linear System Solver**\n\n"
+            "General-purpose $n \\times n$ matrix solver with editable inputs and an auditable step-by-step reduction log."
+        )
+    with c_tab2:
+        st.info(
+            "**📈 Tab 2: Concrete Strength Predictor**\n\n"
+            "Inspect multicollinearity (VIF), trace the $(X^T X)\\beta = X^T y$ derivation, and simulate mix designs in real time."
+        )
 
 tab1, tab2 = st.tabs(
     ["🔢 System of Linear Equations", "📈 Multiple Linear Regression"]
@@ -128,6 +170,7 @@ tab1, tab2 = st.tabs(
 # -----------------------------------------------------------------------------
 with tab1:
     st.header("Solve a System of Linear Equations ($Ax = b$)")
+    st.caption("General-purpose numerical solver powered by our custom Gauss-Jordan elimination engine.")
 
     with st.container(border=True):
         col_ctrl1, col_ctrl2 = st.columns([1, 3])
@@ -141,8 +184,7 @@ with tab1:
             )
         with col_ctrl2:
             st.info(
-                "Click any cell in the table below to edit coefficients. Always"
-                " press **Enter** after typing."
+                "Click any cell in the table below to edit coefficients. Always press **Enter** after typing."
             )
 
         default_data = [
@@ -254,8 +296,6 @@ with tab2:
             num_rows="dynamic",
             key=f"ml_data_editor_{st.session_state.ml_editor_version}",
         )
-        # Keep session state in sync with any inline edits/adds/deletes made
-        # directly in the grid above (e.g. its own trash icon or "+" row).
         st.session_state.ml_training_data = edited_data
 
         remove_col, button_col = st.columns([3, 1])
@@ -265,7 +305,7 @@ with tab2:
                     "Select a batch to remove",
                     options=list(edited_data.index),
                     format_func=lambda i: (
-                        f"Batch {i + 1}: Cement={edited_data.loc[i, 'Cement_kg_m3']:.0f} kg/m\u00b3, "
+                        f"Batch {i + 1}: Cement={edited_data.loc[i, 'Cement_kg_m3']:.0f} kg/m³, "
                         f"w/c={edited_data.loc[i, 'Water_Cement_Ratio']:.2f}, "
                         f"Age={edited_data.loc[i, 'Curing_Age_Days']:.0f}d, "
                         f"Strength={edited_data.loc[i, 'Strength_MPa']:.1f} MPa"
@@ -274,7 +314,7 @@ with tab2:
                 )
             else:
                 batch_to_remove = None
-                st.caption("At least one batch must remain \u2014 add more before removing this one.")
+                st.caption("At least one batch must remain — add more before removing this one.")
         with button_col:
             if st.button(
                 "🗑️ Remove Batch",
@@ -284,8 +324,6 @@ with tab2:
                 st.session_state.ml_training_data = edited_data.drop(
                     index=batch_to_remove
                 ).reset_index(drop=True)
-                # Changing the key forces the grid to fully remount with the
-                # smaller dataframe rather than keeping stale internal state.
                 st.session_state.ml_editor_version += 1
                 st.rerun()
 
@@ -299,10 +337,8 @@ with tab2:
             expanded=False,
         ):
             st.caption(
-                "Cement content and water-cement ratio are physically linked"
-                " in real mix design, so it's worth checking they aren't"
-                " *too* correlated before trusting individual coefficients."
-                " Rule of thumb: VIF > 5-10 signals a problem."
+                "Cement content and water-cement ratio are physically linked in mix design. "
+                "Rule of thumb: VIF > 5–10 signals problematic collinearity."
             )
             try:
                 vif_df = compute_vif(
@@ -315,10 +351,7 @@ with tab2:
                     hide_index=True,
                 )
                 corr_df = edited_data[feature_cols_preview].corr()
-                st.caption(
-                    "Pairwise correlation matrix (values near +1/-1 indicate "
-                    "strong correlation between predictors):"
-                )
+                st.caption("Pairwise correlation matrix:")
                 st.dataframe(
                     corr_df.style.format("{:.2f}"),
                     use_container_width=True,
@@ -379,9 +412,7 @@ with tab2:
 
             st.markdown("##### Coefficient Significance")
             st.caption(
-                "Is each predictor's effect distinguishable from zero, or"
-                " could it plausibly be noise? Standard error and t-stat are"
-                " computed from (XᵀX)⁻¹ using the same custom solver."
+                "Standard error and t-stat are computed from (XᵀX)⁻¹ using the same custom solver."
             )
             try:
                 stats_result = st.session_state[
@@ -408,9 +439,7 @@ with tab2:
                 )
                 if p_values is None:
                     st.caption(
-                        f"(degrees of freedom = {dof}; install scipy to see"
-                        " exact p-values — as a rough rule of thumb, |t| > 2"
-                        " suggests the predictor is likely meaningful.)"
+                        f"(degrees of freedom = {dof}; install scipy to view exact p-values)"
                     )
                 else:
                     st.caption(f"degrees of freedom = {dof}")
@@ -425,8 +454,7 @@ with tab2:
                 "3. 📝 Step-by-Step Derivation of $(X^T X)\\beta = X^T y$"
             )
             st.markdown(
-                "Training this model minimizes the squared prediction errors"
-                " using the **Normal Equations**:"
+                "Minimizing squared prediction errors yields the **Normal Equations**:"
             )
             st.latex(r"(X^T X)\beta = X^T y \quad \iff \quad A\beta = b")
 
@@ -437,8 +465,7 @@ with tab2:
             N = len(y_vec)
 
             with st.expander(
-                "📌 Part A: Matrix Equations (Symbolic Formula vs. Numerical"
-                " Values)",
+                "📌 Part A: Matrix Equations (Symbolic Formula vs. Numerical Values)",
                 expanded=True,
             ):
                 st.markdown("**1. General Symbolic Matrix Structure:**")
@@ -480,13 +507,11 @@ with tab2:
                 """)
 
             with st.expander(
-                "🔢 Part B: Calculations Breakdown (Data Values &"
-                " Arithmetic)",
+                "🔢 Part B: Calculations Breakdown (Data Values & Arithmetic)",
                 expanded=True,
             ):
                 st.markdown(
-                    "Each entry in the matrix is formed by summing across all"
-                    " batch samples:"
+                    "Each entry in the matrix is formed by summing across all batch samples:"
                 )
 
                 def format_sum(arr):
@@ -526,7 +551,7 @@ with tab2:
                         "Σ (Age × Strength)",
                     ],
                     "Actual Numbers Being Added": [
-                        "1 + 1 + 1 + 1 + 1 + 1 + 1 + 1",
+                        " + ".join(["1"] * N),
                         format_sum(x1),
                         format_sum(x2),
                         format_sum(x3),
@@ -565,7 +590,7 @@ with tab2:
                 )
 
             st.markdown(
-                "##### **Part C: Assembled Augmented Matrix $[(X^T X) \\mid"                 " (X^T y)]$**"
+                "##### **Part C: Assembled Augmented Matrix $[(X^T X) \\mid (X^T y)]$**"
             )
             norm_col_headers = [
                 "β₀ (Intercept)",
@@ -591,12 +616,10 @@ with tab2:
 
             st.divider()
             st.markdown(
-                "##### **Part D: Step-by-Step Gauss-Jordan Reduction to"
-                " Identity $[I \\mid \\beta]$**"
+                "##### **Part D: Step-by-Step Gauss-Jordan Reduction to Identity $[I \\mid \\beta]$**"
             )
             st.caption(
-                f"Our custom solver reduces this 4×4 system in {len(ml_steps)}"
-                " steps to solve for the final coefficients:"
+                f"Our custom solver reduces this 4×4 system in {len(ml_steps)} steps to solve for the final coefficients:"
             )
 
             for idx, step_info in enumerate(ml_steps):
@@ -620,14 +643,9 @@ with tab2:
         with st.container(border=True):
             st.subheader("4. 📊 Training Fit: Actual vs. Predicted (In-Sample)")
             st.markdown(
-                "This section shows how well the model fits the **same"
-                " batches it was trained on**. With only a handful of"
-                " specimens and 4 parameters to fit, in-sample R² will look"
-                " good almost by construction -- see section 5 below for a"
-                " more honest, held-out estimate of predictive accuracy."
+                "This section measures fit on the **same batches used for training**."
             )
 
-            # Compute predictions and statistical accuracy metrics
             y_pred = st.session_state["trained_model"].predict(X_data)
             residuals = y_data - y_pred
             ss_tot = np.sum((y_data - np.mean(y_data)) ** 2)
@@ -635,54 +653,22 @@ with tab2:
             r2 = 1.0 - (ss_res / ss_tot)
             mae = np.mean(np.abs(residuals))
             rmse = np.sqrt(np.mean(residuals**2))
-            # Mean Absolute Percentage Error -> expressed as "accuracy".
-            # This is the standard way to turn a regression error into a
-            # single accuracy-style percentage (unlike an ad-hoc per-row
-            # formula): Accuracy = 100% - average absolute % error.
             mape = np.mean(np.abs(residuals / y_data)) * 100.0
             accuracy_pct = 100.0 - mape
 
-            # Display Key Statistical Performance Indicators (KPIs)
             m1, m2, m3, m4, m5 = st.columns(5)
-            m1.metric(
-                "R² Score (Fit Quality)",
-                f"{r2:.4f}",
-                help="1.0 indicates a perfect fit. >0.90 indicates high predictive accuracy.",
-            )
-            m2.metric(
-                "Mean Absolute Error (MAE)",
-                f"{mae:.2f} MPa",
-                help="Average discrepancy between predicted and actual laboratory breaks.",
-            )
-            m3.metric(
-                "Root Mean Squared Error (RMSE)",
-                f"{rmse:.2f} MPa",
-                help="Standard deviation of residuals; penalizes larger errors.",
-            )
-            m4.metric(
-                "Max Error",
-                f"{np.max(np.abs(residuals)):.2f} MPa",
-                help="Largest single variance across all test batches.",
-            )
-            m5.metric(
-                "Accuracy (100% \u2212 MAPE)",
-                f"{accuracy_pct:.2f}%",
-                help=(
-                    "Derived from Mean Absolute Percentage Error: "
-                    "100% minus the average absolute error as a percentage "
-                    "of actual strength. This is training-data accuracy \u2014 "
-                    "see the Leave-One-Out Cross-Validation accuracy below "
-                    "for a more honest, held-out estimate."
-                ),
-            )
+            m1.metric("R² Score (Fit Quality)", f"{r2:.4f}")
+            m2.metric("Mean Absolute Error (MAE)", f"{mae:.2f} MPa")
+            m3.metric("Root Mean Squared Error (RMSE)", f"{rmse:.2f} MPa")
+            m4.metric("Max Error", f"{np.max(np.abs(residuals)):.2f} MPa")
+            m5.metric("Accuracy (100% − MAPE)", f"{accuracy_pct:.2f}%")
 
-            # Axis Explanation Banner
             st.info("""
-            **Understanding the Graph Below:**
-            * 📌 **Horizontal Axis (X-Axis):** **Batch Cylinder Specimen** (`Batch 1` to `Batch 8`). Each point corresponds to a distinct laboratory mix proportion.
+            **Graph Legend & Axes:**
+            * 📌 **Horizontal Axis (X-Axis):** **Batch Cylinder Specimen** (`Batch 1` to `Batch 8`).
             * 📌 **Vertical Axis (Y-Axis):** **Compressive Strength in Megapascals ($\text{MPa}$)**.
-            * 🔵 **Blue Line:** Actual Lab Measured Strength (from Universal Testing Machine breaks).
-            * 🔴 **Red Line:** Model Predicted Strength (computed using the Gauss-Jordan weights).
+            * 🔵 **Blue Line:** Actual Lab Measured Strength (from UTM testing).
+            * 🔴 **Red Line:** Model Predicted Strength (from Gauss-Jordan regression).
             """)
 
             batch_labels = [f"Batch {i+1}" for i in range(len(y_data))]
@@ -696,11 +682,10 @@ with tab2:
 
             st.line_chart(
                 chart_df,
-                 color=["#3b82f6", "#ef4444"],  # #3b82f6 = Blue (Actual), #ef4444 = Red (Predicted)
-                 use_container_width=True,
-)   
+                color=["#3b82f6", "#ef4444"],
+                use_container_width=True,
+            )
 
-            # Detailed Specimen-by-Specimen Audit Table
             with st.expander(
                 "📋 View Detailed Batch-by-Batch Residual Error Table",
                 expanded=True,
@@ -716,12 +701,6 @@ with tab2:
                         "Residual Error (MPa)": residuals,
                         "Accuracy (%)": 100.0 - (np.abs(residuals) / y_data * 100.0),
                     }
-                )
-                st.caption(
-                    "Accuracy (%) here is per-batch: 100% minus that "
-                    "batch's absolute percentage error. It is not a "
-                    "classification accuracy \u2014 it simply expresses each "
-                    "prediction's error as a percentage for easy reading."
                 )
 
                 st.dataframe(
@@ -739,18 +718,13 @@ with tab2:
                 )
 
         # ---------------------------------------------------------------------
-        # 5. LEAVE-ONE-OUT CROSS-VALIDATION (the real predictive check)
+        # 5. LEAVE-ONE-OUT CROSS-VALIDATION (LOOCV)
         # ---------------------------------------------------------------------
         with st.container(border=True):
             st.subheader("5. 🎯 Cross-Validated Performance (Leave-One-Out)")
             st.markdown(
-                "Section 4 scores the model on data it already saw. Here,"
-                " each batch is held out in turn, the model is **refit from"
-                " scratch** on the remaining batches, and used to predict"
-                " the one left out. This is a much more honest estimate of"
-                " how the model performs on a specimen it hasn't seen --"
-                " important with a dataset this small, where in-sample fit"
-                " and true predictive accuracy can diverge a lot."
+                "Each batch is held out in turn while the model is refitted from scratch on the remaining batches. "
+                "This provides an honest estimate of real-world predictive generalization."
             )
 
             with st.spinner("Refitting model for each held-out batch..."):
@@ -765,21 +739,12 @@ with tab2:
             if loocv_result is not None:
                 if loocv_result["n_failed"] > 0:
                     st.warning(
-                        f"⚠️ {loocv_result['n_failed']} of {len(y_data)} folds"
-                        f" hit a near-singular system when that batch was"
-                        f" removed (too little data left to pin down 4"
-                        f" parameters) and were skipped. Metrics below use"
-                        f" the remaining {loocv_result['n_valid']} folds — a"
-                        f" strong sign this dataset is too small for"
-                        f" reliable cross-validation."
+                        f"⚠️ {loocv_result['n_failed']} of {len(y_data)} folds hit an ill-conditioned system "
+                        f"when that batch was removed and were skipped. Metrics use the remaining {loocv_result['n_valid']} folds."
                     )
 
                 lc1, lc2, lc3, lc4 = st.columns(4)
-                lc1.metric(
-                    "LOOCV R²",
-                    f"{loocv_result['r2']:.4f}",
-                    help="R² computed only from held-out predictions.",
-                )
+                lc1.metric("LOOCV R²", f"{loocv_result['r2']:.4f}")
                 lc2.metric("LOOCV MAE", f"{loocv_result['mae']:.2f} MPa")
                 lc3.metric("LOOCV RMSE", f"{loocv_result['rmse']:.2f} MPa")
 
@@ -790,22 +755,11 @@ with tab2:
                         / y_data[valid_mask]
                     )
                 ) * 100.0
-                lc4.metric(
-                    "LOOCV Accuracy (100% \u2212 MAPE)",
-                    f"{100.0 - loocv_mape:.2f}%",
-                    help=(
-                        "The honest counterpart to the training-data "
-                        "accuracy above \u2014 computed only from held-out "
-                        "predictions."
-                    ),
-                )
+                lc4.metric("LOOCV Accuracy (100% − MAPE)", f"{100.0 - loocv_mape:.2f}%")
 
                 if loocv_result["r2"] < r2 - 0.15:
                     st.warning(
-                        "⚠️ LOOCV performance is notably worse than the"
-                        " in-sample fit above -- a sign the model may be"
-                        " overfitting this small dataset. Consider"
-                        " collecting more batch observations."
+                        "⚠️ LOOCV performance is lower than in-sample fit, indicating potential sensitivity to small sample size."
                     )
 
                 loocv_df = pd.DataFrame(
@@ -835,8 +789,7 @@ with tab2:
         with st.container(border=True):
             st.subheader("6. 🎛️ Interactive Strength Predictor")
             st.write(
-                "Use the sliders below to test arbitrary mix designs in real"
-                " time:"
+                "Use the sliders below to test arbitrary mix designs in real time:"
             )
 
             p1, p2, p3 = st.columns(3)
@@ -857,7 +810,7 @@ with tab2:
             st.markdown(
                 f"""
                 <div style="background-color: #1e293b; padding: 18px; border-radius: 8px; border: 1px solid #f59e0b; text-align: center; margin-top: 10px;">
-                    <span style="font-size: 1.1rem; color: #94A3B8;">Estimated 28-Day Strength:</span>
+                    <span style="font-size: 1.1rem; color: #94A3B8;">Estimated Compressive Strength:</span>
                     <h2 style="margin: 4px 0 0 0; color: #F59E0B;">{pred_strength:.2f} MPa</h2>
                 </div>
             """,
