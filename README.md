@@ -3,7 +3,6 @@
 
 **Davao Oriental State University**  
 Faculty of Computing, Engineering and Technology — Department of Civil Engineering  
-*Project Defense Documentation & Technical Implementation (September 2026)*
 
 [![Streamlit](https://img.shields.io/badge/Framework-Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io)
 [![Python](https://img.shields.io/badge/Language-Python%203.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
