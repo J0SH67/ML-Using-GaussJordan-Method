@@ -36,9 +36,9 @@ class MultipleLinearRegression:
       self.coefficients = np.array(self.coefficients)
       return self.coefficients, self.steps
     else:
-      self.coefficients = np.array(solve_gauss_jordan(
-          XT_X.tolist(), XT_y.tolist(), return_steps=False
-      ))
+      self.coefficients = np.array(
+          solve_gauss_jordan(XT_X.tolist(), XT_y.tolist(), return_steps=False)
+      )
       return self.coefficients
 
   def predict(self, X):
@@ -63,10 +63,7 @@ class MultipleLinearRegression:
     return np.dot(X_design, self.coefficients)
 
   def inverse_XtX(self):
-    """Computes (X^T X)^-1 by solving (X^T X) * z_i = e_i for each unit
-    vector e_i, reusing the same custom Gauss-Jordan solver rather than
-    calling a library matrix-inversion routine. Needed for coefficient
-    standard errors."""
+    """Computes (X^T X)^-1 by solving (X^T X) * z_i = e_i for each unit vector e_i."""
     if self.XT_X is None:
       raise ValueError("Model has not been trained yet. Call fit() first.")
 
@@ -77,18 +74,10 @@ class MultipleLinearRegression:
       e_i = [1.0 if j == i else 0.0 for j in range(n)]
       col = solve_gauss_jordan(XT_X_list, e_i, return_steps=False)
       inv_columns.append(col)
-    # inv_columns[i] holds column i of the inverse; stack + transpose to
-    # assemble the full matrix.
     return np.array(inv_columns).T
 
   def coefficient_stats(self, X, y):
-    """Standard errors and t-statistics for each coefficient, using the
-    residual variance and (X^T X)^-1. Lets you say which predictors are
-    statistically meaningful rather than just reporting the beta values.
-
-    Returns a dict with se, t_stats, p_values (None if scipy isn't
-    installed), and dof (degrees of freedom).
-    """
+    """Standard errors and t-statistics for each coefficient."""
     if self.coefficients is None:
       raise ValueError("Model has not been trained yet. Call fit() first.")
 
@@ -100,13 +89,13 @@ class MultipleLinearRegression:
 
     if dof <= 0:
       raise ValueError(
-          f"Not enough observations to estimate coefficient uncertainty: "
+          "Not enough observations to estimate coefficient uncertainty: "
           f"{n_samples} rows but {n_params} parameters (need more rows than "
-          f"parameters)."
+          "parameters)."
       )
 
     residuals = y - self.predict(X)
-    sigma2 = np.sum(residuals ** 2) / dof
+    sigma2 = np.sum(residuals**2) / dof
     inv_XtX = self.inverse_XtX()
     se = np.sqrt(sigma2 * np.diag(inv_XtX))
     t_stats = self.coefficients / se
@@ -114,6 +103,7 @@ class MultipleLinearRegression:
     p_values = None
     try:
       from scipy import stats
+
       p_values = 2.0 * (1.0 - stats.t.cdf(np.abs(t_stats), dof))
     except ImportError:
       pass
@@ -121,24 +111,11 @@ class MultipleLinearRegression:
     return {"se": se, "t_stats": t_stats, "p_values": p_values, "dof": dof}
 
   def loocv(self, X, y):
-    """Leave-One-Out Cross-Validation.
-
-    Unlike scoring the model on the same rows it was trained on, this
-    refits the model N times, each time holding out one observation and
-    predicting it from the rest. With a small dataset (a handful of batch
-    specimens) this is a far more honest measure of predictive accuracy
-    than in-sample R^2/MAE/RMSE, which will look good almost by
-    construction once the parameter count approaches the sample count.
-    """
+    """Leave-One-Out Cross-Validation."""
     X = np.array(X, dtype=float)
     y = np.array(y, dtype=float)
     n = X.shape[0]
 
-    # A fold can hit a near-singular (X^T X) purely because removing one
-    # specimen from an already-tiny dataset leaves too little information to
-    # pin down 4 parameters -- this is itself a symptom of the dataset being
-    # too small, not a bug. Such folds are skipped and reported rather than
-    # left to crash the whole cross-validation.
     preds = np.full(n, np.nan)
     failed_indices = []
     for i in range(n):
@@ -147,29 +124,28 @@ class MultipleLinearRegression:
       fold_model = MultipleLinearRegression()
       try:
         fold_model.fit(X[mask], y[mask])
-        preds[i] = fold_model.predict(X[i:i + 1])[0]
+        preds[i] = fold_model.predict(X[i : i + 1])[0]
       except ValueError:
         failed_indices.append(i)
 
     valid = ~np.isnan(preds)
     if not np.any(valid):
       raise ValueError(
-          "Every leave-one-out fold hit a singular system -- this dataset"
-          " is too small and/or too collinear for leave-one-out"
-          " cross-validation."
+          "Every leave-one-out fold hit a singular system -- this dataset is"
+          " too small and/or too collinear for leave-one-out cross-validation."
       )
 
     residuals = np.where(valid, y - preds, np.nan)
     valid_residuals = residuals[valid]
     ss_tot = np.sum((y[valid] - np.mean(y[valid])) ** 2)
-    ss_res = np.sum(valid_residuals ** 2)
+    ss_res = np.sum(valid_residuals**2)
     r2 = 1.0 - (ss_res / ss_tot) if ss_tot > 0 else float("nan")
     mae = np.mean(np.abs(valid_residuals))
-    rmse = np.sqrt(np.mean(valid_residuals ** 2))
+    rmse = np.sqrt(np.mean(valid_residuals**2))
 
     return {
-        "predictions": preds,          # NaN at any failed-fold index
-        "residuals": residuals,        # NaN at any failed-fold index
+        "predictions": preds,
+        "residuals": residuals,
         "r2": r2,
         "mae": mae,
         "rmse": rmse,
