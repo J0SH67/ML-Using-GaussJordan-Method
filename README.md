@@ -1,8 +1,8 @@
-# Concrete Compressive Strength Predictor & Linear Systems Solver
+# 🏗️ Concrete Compressive Strength Predictor & Linear Systems Solver
 ### *Supervised Machine Learning via Custom Gauss-Jordan Elimination with Scale-Aware Pivoting*
 
 **Davao Oriental State University**  
-Faculty of Computing Engineering and Technology  — Department of Civil Engineering  
+Faculty of Computing, Engineering and Technology — Department of Civil Engineering  
 *Project Defense Documentation & Technical Implementation (September 2026)*
 
 [![Streamlit](https://img.shields.io/badge/Framework-Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io)
@@ -10,9 +10,10 @@ Faculty of Computing Engineering and Technology  — Department of Civil Enginee
 [![License](https://img.shields.io/badge/License-Academic%20Use-blue?style=for-the-badge)](#)
 
 ---
-## 👥 Instructor
-* **Engr. Samuel Erespe**
-  
+
+## 👨‍🏫 Course Instructor
+* **Engr. Manuel Erespe**
+
 ## 👥 Proponents & Contributors
 * **John Joshua D. Ilisan**
 * **Darius Lape**
@@ -131,72 +132,8 @@ $$\text{Strength} = -5.99 + 0.1176(\text{Cement}) - 19.8648(w/c) + 0.5463(\text{
 ## 📂 Project Structure
 
 ```text
-├── app.py               # Streamlit web application with VIF, audit tables, and LOOCV UI
-├── gauss_jordan.py      # Custom solver with partial pivoting & scale-aware singularity checks
-├── linear_regression.py # OLS Normal Equations engine, custom (XᵀX)⁻¹ inversion, and LOOCV
-├── requirements.txt     # Dependencies (streamlit, numpy, pandas, scipy)
-└── README.md            # Project documentation and engineering defense report
-
-```
-
----
-
-## 🚀 Installation & Local Deployment
-
-### 1. Prerequisites
-
-Ensure Python 3.9+ is installed on your machine.
-
-### 2. Clone the Repository
-
-```bash
-git clone [https://github.com/your-username/ML-Using-GaussJordan-Method.git](https://github.com/your-username/ML-Using-GaussJordan-Method.git)
-cd ML-Using-GaussJordan-Method
-
-```
-
-### 3. Install Dependencies
-
-```bash
-pip install streamlit numpy pandas scipy
-
-```
-
-### 4. Run the Streamlit Application
-
-```bash
-streamlit run app.py
-
-```
-
-The interface will automatically launch at `http://localhost:8501`. The app runs fully offline without requiring an active internet connection.
-
----
-
-## 🖥️ How to Use the Application
-
-### Tab 1: System of Linear Equations ($Ax = b$)
-
-* **Dimension Selection:** Select matrix dimensions $n \times n$ (from $2 \times 2$ to $8 \times 8$).
-* **Interactive Matrix Entry:** Edit coefficient values and constants vector $b$ directly inside the interactive table.
-* **Detailed Step Log:** Click **"Solve with Gauss-Jordan"** to view solution variables with clean unicode subscripts ($x_1, x_2, \dots$) and inspect every row swap, normalization, and elimination step.
-
-### Tab 2: Concrete Strength Predictor
-
-* **Multicollinearity Pre-Screening:** Expand the pre-training panel to inspect Variance Inflation Factors (VIF) and correlation coefficients.
-* **Train Model:** Click **"🧠 Train Regression Model"** to compute $(X^T X)\beta = X^T y$.
-* **Inspect Step-by-Step Derivation:** Review the symbolic formula, the explicit data summation table, the assembled augmented matrix, and the step-by-step reduction log.
-* **Examine Validation:** Inspect in-sample metrics ($R^2$, MAE, RMSE) and compare them with the Leave-One-Out Cross-Validation (LOOCV) results.
-* **Interactive Mix Simulator:** Adjust the Cement, $w/c$ ratio, and Curing Age sliders to predict compressive strength in real time.
-
----
-
-## ⚠️ Engineering Limitations & Future Work
-
-* **Sample Size:** With $N = 8$ batches for 4 unknowns, the degrees of freedom ($N - p = 4$) remain constrained. Expanding the dataset to $N \ge 40$ will narrow parameter standard errors.
-* **Condition Squaring:** Forming $X^T X$ squares the matrix condition number, which contributed to one ill-conditioned cross-validation fold. Future iterations could implement QR decomposition or Singular Value Decomposition (SVD).
-* **Linear Extrapolation:** Being an unconstrained linear model, physical bounds are only guaranteed within the domain of the training observations.
-
-```
-
-```
+├── app.py                # Streamlit web application with VIF, audit tables, and LOOCV UI
+├── gauss_jordan.py       # Custom solver with partial pivoting & scale-aware singularity checks
+├── linear_regression.py  # OLS Normal Equations engine, custom (XᵀX)⁻¹ inversion, and LOOCV
+├── requirements.txt      # Dependencies (streamlit, numpy, pandas, scipy)
+└── README.md             # Project documentation and engineering defense report
