@@ -9,11 +9,6 @@ def solve_gauss_jordan(A, b, return_steps=False, tol=1e-10):
 
     `tol` is a *relative* tolerance: a pivot is treated as singular if it is
     smaller than `tol * (largest absolute value in the working matrix)`.
-    A relative tolerance (rather than a fixed absolute one) keeps the check
-    meaningful even when columns sit on very different scales -- e.g. cement
-    content in the hundreds vs. a water-cement ratio around 0.4 -- which is
-    exactly the situation this solver sees when it's driven by the Normal
-    Equations in linear_regression.py.
     """
     n = len(A)
 
@@ -31,7 +26,10 @@ def solve_gauss_jordan(A, b, return_steps=False, tol=1e-10):
         steps.append(
             {
                 "title": "Initial Augmented Matrix [A | b]",
-                "operation": "Formed by placing coefficients A on the left and constants b on the right.",
+                "operation": (
+                    "Formed by placing coefficients A on the left and"
+                    " constants b on the right."
+                ),
                 "matrix": copy.deepcopy(M),
             }
         )
@@ -50,7 +48,11 @@ def solve_gauss_jordan(A, b, return_steps=False, tol=1e-10):
                 steps.append(
                     {
                         "title": f"Column {col+1}: Partial Pivoting (Row Swap)",
-                        "operation": f"Swapped Row {col+1} with Row {max_row+1} to place the largest available value ({M[col][col]:.4f}) on the diagonal.",
+                        "operation": (
+                            f"Swapped Row {col+1} with Row {max_row+1} to place"
+                            " the largest available value"
+                            f" ({M[col][col]:.4f}) on the diagonal."
+                        ),
                         "matrix": copy.deepcopy(M),
                     }
                 )
@@ -59,9 +61,9 @@ def solve_gauss_jordan(A, b, return_steps=False, tol=1e-10):
         if abs(pivot) < abs_tol:
             raise ValueError(
                 f"Matrix is singular or too ill-conditioned at column {col+1} "
-                f"(pivot={pivot:.2e}, threshold={abs_tol:.2e}). This usually means "
-                f"two rows/predictors are duplicated or near-perfectly correlated "
-                f"-- check your input data for collinear columns."
+                f"(pivot={pivot:.2e}, threshold={abs_tol:.2e}). This usually"
+                " means two rows/predictors are duplicated or near-perfectly"
+                " correlated -- check your input data for collinear columns."
             )
 
         # --- B. Normalize Pivot Row ---
@@ -72,7 +74,10 @@ def solve_gauss_jordan(A, b, return_steps=False, tol=1e-10):
             steps.append(
                 {
                     "title": f"Column {col+1}: Normalize Pivot Row",
-                    "operation": f"Divided entire Row {col+1} by pivot value {pivot:.4f} so the diagonal entry becomes 1.0.",
+                    "operation": (
+                        f"Divided entire Row {col+1} by pivot value"
+                        f" {pivot:.4f} so the diagonal entry becomes 1.0."
+                    ),
                     "matrix": copy.deepcopy(M),
                 }
             )
@@ -108,24 +113,3 @@ def solve_gauss_jordan(A, b, return_steps=False, tol=1e-10):
     if return_steps:
         return solution, steps
     return solution
-
-
-# ---------------------------------------------------------
-# Test execution printing the step-by-step derivation
-# ---------------------------------------------------------
-if __name__ == "__main__":
-    A_test = [[2.0, 1.0], [1.0, 3.0]]
-    b_test = [5.0, 5.0]
-
-    sol, steps_log = solve_gauss_jordan(A_test, b_test, return_steps=True)
-
-    print(f"Total steps recorded: {len(steps_log)}\n")
-    for idx, s in enumerate(steps_log):
-        print(f"--- Step {idx+1}: {s['title']} ---")
-        print(f"Action: {s['operation']}")
-        print("Matrix State:")
-        for r in s["matrix"]:
-            print("  ", [round(val, 3) for val in r])
-        print()
-
-    print("Final Solution:", sol)
