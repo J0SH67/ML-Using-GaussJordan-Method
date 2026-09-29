@@ -88,13 +88,31 @@ st.markdown(
         border-radius: 10px !important;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
     }
+    [data-testid="stMetric"] {
+        height: 100% !important;
+        overflow: visible !important;
+    }
     [data-testid="stMetricLabel"] {
         color: #F2AA52 !important;
         font-weight: 600 !important;
+        min-height: 2.8em !important;
+        line-height: 1.35 !important;
+    }
+    /* Streamlit truncates metric text with "..." by default; let it wrap instead */
+    [data-testid="stMetricLabel"],
+    [data-testid="stMetricLabel"] *,
+    [data-testid="stMetricValue"],
+    [data-testid="stMetricValue"] * {
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        overflow-wrap: anywhere !important;
     }
     [data-testid="stMetricValue"] {
         color: #FFFFFF !important;
         font-weight: 700 !important;
+        font-size: clamp(1.25rem, 1.9vw, 1.9rem) !important;
+        line-height: 1.2 !important;
     }
 
     /* 5. Primary Action Buttons (#D95F18 resting, #F28B30 hover) */
