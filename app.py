@@ -41,39 +41,103 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 2. CUSTOM CSS STYLING
+# 2. CUSTOM CSS STYLING (FULL PALETTE INTEGRATION)
 # -----------------------------------------------------------------------------
 st.markdown(
     """
     <style>
-    /* Clean rounded cards for metrics */
-    [data-testid="stMetric"] {
-        background-color: #1e293b;
-        border: 1px solid #334155;
-        padding: 16px 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15);
-    }
-    
-    /* Interactive hover lift for primary buttons */
-    div.stButton > button:first-child {
-        border-radius: 8px;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        transition: all 0.25s ease;
-    }
-    div.stButton > button:first-child:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+    /* 1. Full Page & Canvas Backgrounds */
+    .stApp, [data-testid="stAppViewContainer"] {
+        background-color: #17112E !important;
+        color: #F8FAFC !important;
     }
 
-    /* Top banner styling */
+    [data-testid="stHeader"] {
+        background-color: transparent !important;
+    }
+
+    /* 2. Sidebar Theming */
+    [data-testid="stSidebar"] {
+        background-color: #1E153B !important;
+        border-right: 1px solid rgba(242, 170, 82, 0.15) !important;
+    }
+    [data-testid="stSidebar"] * {
+        color: #F8FAFC !important;
+    }
+
+    /* 3. Containers, Cards & Expanders */
+    [data-testid="stVerticalBlockBorderWrapper"] > div {
+        background-color: #221844 !important;
+        border: 1px solid rgba(242, 170, 82, 0.2) !important;
+        border-radius: 10px !important;
+    }
+    [data-testid="stExpander"] {
+        background-color: #221844 !important;
+        border: 1px solid rgba(242, 170, 82, 0.2) !important;
+        border-radius: 8px !important;
+    }
+    details summary {
+        color: #F2AA52 !important;
+    }
+
+    /* 4. Metric Cards (#2D2059) */
+    [data-testid="stMetric"] {
+        background-color: #2D2059 !important;
+        border: 1px solid rgba(242, 170, 82, 0.3) !important;
+        padding: 16px 20px !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+    }
+    [data-testid="stMetricLabel"] {
+        color: #F2AA52 !important;
+        font-weight: 600 !important;
+    }
+    [data-testid="stMetricValue"] {
+        color: #FFFFFF !important;
+        font-weight: 700 !important;
+    }
+
+    /* 5. Primary Action Buttons (#D95F18 resting, #F28B30 hover) */
+    div.stButton > button[kind="primary"],
+    div.stButton > button[data-testid="baseButton-primary"] {
+        background-color: #D95F18 !important;
+        border: 1px solid #D95F18 !important;
+        color: #FFFFFF !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.5px !important;
+        transition: all 0.25s ease !important;
+    }
+    div.stButton > button[kind="primary"]:hover,
+    div.stButton > button[data-testid="baseButton-primary"]:hover {
+        background-color: #F28B30 !important;
+        border-color: #F28B30 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 14px rgba(242, 139, 48, 0.45) !important;
+    }
+
+    /* 6. Hero Top Banner */
     .hero-banner {
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-        border-left: 6px solid #f59e0b;
-        padding: 20px 24px;
-        border-radius: 10px;
-        margin-bottom: 16px;
+        background: linear-gradient(135deg, #2D2059 0%, #1A1238 100%) !important;
+        border-left: 6px solid #F28B30 !important;
+        padding: 22px 26px !important;
+        border-radius: 10px !important;
+        margin-bottom: 16px !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    /* 7. Tab Highlights */
+    button[data-baseweb="tab"] {
+        color: #C3BED7 !important;
+    }
+    button[data-baseweb="tab"][aria-selected="true"] {
+        border-bottom-color: #F28B30 !important;
+        color: #F28B30 !important;
+    }
+
+    /* 8. Sliders and Inputs */
+    div[data-baseweb="slider"] div {
+        color: #F28B30 !important;
     }
     </style>
 """,
@@ -106,11 +170,11 @@ with st.sidebar:
 st.markdown(
     """
     <div class="hero-banner">
-        <h2 style="margin: 0; color: #F8FAFC;">Concrete Compressive Strength Predictor & Linear Systems Solver</h2>
-        <p style="margin: 6px 0 10px 0; color: #94A3B8;">
+        <h2 style="margin: 0; color: #FFFFFF;">Concrete Compressive Strength Predictor & Linear Systems Solver</h2>
+        <p style="margin: 6px 0 10px 0; color: #DDD8F0;">
             Supervised Machine Learning via Custom Gauss-Jordan Elimination with Scale-Aware Partial Pivoting.
         </p>
-        <p style="margin: 0; font-size: 0.9rem; color: #F59E0B;">
+        <p style="margin: 0; font-size: 0.9rem; color: #F2AA52;">
             <strong>Proponents:</strong> John Joshua D. Ilisan | Darius Lape | Briel Jan M. Lacia &nbsp;|&nbsp; <em>September 2026</em>
         </p>
     </div>
@@ -667,8 +731,8 @@ with tab2:
             **Graph Legend & Axes:**
             * 📌 **Horizontal Axis (X-Axis):** **Batch Cylinder Specimen** (`Batch 1` to `Batch 8`).
             * 📌 **Vertical Axis (Y-Axis):** **Compressive Strength in Megapascals ($\text{MPa}$)**.
-            * 🔵 **Blue Line:** Actual Lab Measured Strength (from UTM testing).
-            * 🔴 **Red Line:** Model Predicted Strength (from Gauss-Jordan regression).
+            * 🟡 **Amber Line (`#F2AA52`):** Actual Lab Measured Strength (from UTM testing).
+            * 🟠 **Terracotta Line (`#D95F18`):** Model Predicted Strength (from Gauss-Jordan regression).
             """)
 
             batch_labels = [f"Batch {i+1}" for i in range(len(y_data))]
@@ -682,7 +746,7 @@ with tab2:
 
             st.line_chart(
                 chart_df,
-                color=["#3b82f6", "#ef4444"],
+                color=["#F2AA52", "#D95F18"],
                 use_container_width=True,
             )
 
@@ -809,9 +873,9 @@ with tab2:
 
             st.markdown(
                 f"""
-                <div style="background-color: #1e293b; padding: 18px; border-radius: 8px; border: 1px solid #f59e0b; text-align: center; margin-top: 10px;">
-                    <span style="font-size: 1.1rem; color: #94A3B8;">Estimated Compressive Strength:</span>
-                    <h2 style="margin: 4px 0 0 0; color: #F59E0B;">{pred_strength:.2f} MPa</h2>
+                <div style="background-color: #2D2059; padding: 22px; border-radius: 10px; border: 2px solid #F28B30; text-align: center; margin-top: 10px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);">
+                    <span style="font-size: 1.1rem; color: #F2AA52; font-weight: 500;">Estimated Compressive Strength:</span>
+                    <h2 style="margin: 6px 0 0 0; color: #FFFFFF; font-weight: 800;">{pred_strength:.2f} MPa</h2>
                 </div>
             """,
                 unsafe_allow_html=True,
