@@ -11,7 +11,7 @@ Faculty of Computing, Engineering and Technology — Department of Civil Enginee
 ---
 
 ## 👨‍🏫 Course Instructor
-* **Engr. Manuel Erespe**
+* **Engr. Sammuel Erespe**
 
 ## 👥 Proponents & Contributors
 * **John Joshua D. Ilisan**
