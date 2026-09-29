@@ -7,7 +7,7 @@ def solve_gauss_jordan(A, b, return_steps=False, tol=1e-10):
     Optionally returns every intermediate matrix and row operation, for
     step-by-step auditing in the UI.
 
-    `tol` is a *relative* tolerance: a pivot is treated as singular if it is
+    `tol` is a relative tolerance: a pivot is treated as singular if it is
     smaller than `tol * (largest absolute value in the working matrix)`.
     """
     n = len(A)
