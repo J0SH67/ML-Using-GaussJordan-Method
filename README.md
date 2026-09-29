@@ -51,7 +51,7 @@ Because the number of cylinder test batches ($N$) exceeds the number of regressi
 
 $$(X^T X)\beta = X^T y \quad \iff \quad A\beta = b$$
 
-* $X$ is the $(N \times 4)$ design matrix with a leading bias column of $1$s.
+* $X$ is the $(N \times 4)$ design matrix with a leading bias column of ($1$s).
 * $X^T X$ compresses the $N$ observations into a symmetric, square $(4 \times 4)$ coefficient matrix ($A$).
 * $X^T y$ compresses target values into a $(4 \times 1)$ column vector ($b$).
 * The unknown weight vector $\beta = [\beta_0, \beta_1, \beta_2, \beta_3]^T$ is solved directly by passing $[(X^T X) \mid (X^T y)]$ into our custom Gauss-Jordan solver.
