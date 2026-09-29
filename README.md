@@ -173,37 +173,3 @@ To independently test the numerical algorithms directly without launching the UI
 ├── requirements.txt      # Dependencies (streamlit, numpy, pandas, scipy)
 └── README.md             # Project documentation and engineering defense report
 
-## 🚀 Installation & How to Run
-1. Prerequisites
-Ensure you have Python 3.9+ installed:
-python --version
-
-2. Clone the Repository & Navigate to Directory
-git clone <your-repository-url>
-cd <repository-folder-name>
-
-3. Create and Activate a Virtual Environment
- * Linux / macOS:
-   python3 -m venv venv
-source venv/bin/activate
-
- * Windows (Command Prompt / PowerShell):
-   python -m venv venv
-venv\Scripts\activate
-
-4. Install Dependencies
-pip install -r requirements.txt
-
-5. Launch the Streamlit Web Application
-streamlit run app.py
-
-The application will open in your default browser at http://localhost:8501.
-🧪 Optional: Running Standalone Solvers via CLI
-To independently test the numerical algorithms directly without launching the UI:
- * Test Gauss-Jordan Elimination with Step Logging:
-   python gauss_jordan.py
-
- * Test OLS Normal Equations & LOOCV Engine:
-   python linear_regression.py
-
-
