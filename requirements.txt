@@ -1,0 +1,11 @@
+# Web application framework
+streamlit>=1.28.0
+
+# Numerical computing & matrix operations
+numpy>=1.23.0
+
+# Data manipulation & tabular operations
+pandas>=2.0.0
+
+# Statistical inference & p-value calculations (t-distribution CDF)
+scipy>=1.10.0
