@@ -132,8 +132,7 @@ $$\text{Strength} = -5.99 + 0.1176(\text{Cement}) - 19.8648(w/c) + 0.5463(\text{
 ## 🚀 Installation & How to Run
 1. Prerequisites
 Ensure you have Python 3.9+ installed:
-python --version
-
+├── python --version
 2. Clone the Repository & Navigate to Directory
 git clone <your-repository-url>
 cd <repository-folder-name>
