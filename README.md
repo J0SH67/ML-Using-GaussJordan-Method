@@ -38,11 +38,11 @@ $$\text{Strength} = \beta_0 + \beta_1(\text{Cement}) + \beta_2(w/c) + \beta_3(\t
 
 | Parameter | Type | Unit | Engineering Role & Behavior |
 | :--- | :--- | :--- | :--- |
-| **$\beta_0$** | Unknown | $\text{MPa}$ | **Baseline Intercept**: Mathematical datum of the regression hyperplane. |
-| **$x_1$ / $\beta_1$** | Feature | $\text{kg/m}^3$ | **Cement Content**: Primary binder. Positive effect ($\beta_1 > 0$) as binder paste densifies. |
+| **$\beta_0$** | Unknown | MPa | **Baseline Intercept**: Mathematical datum of the regression hyperplane. |
+| **$x_1$ / $\beta_1$** | Feature | kg/m³ | **Cement Content**: Primary binder. Positive effect ($\beta_1 > 0$) as binder paste densifies. |
 | **$x_2$ / $\beta_2$** | Feature | Decimal | **Water-Cement Ratio ($w/c$)**: Governed by Abrams' Law. Negative effect ($\beta_2 < 0$) due to capillary voids left by unreacted water. |
 | **$x_3$ / $\beta_3$** | Feature | Days | **Curing Age**: Hydration progression over time. Positive effect ($\beta_3 > 0$) as Calcium Silicate Hydrates (C-S-H) form. |
-| **$y$** | Target | $\text{MPa}$ | **Compressive Strength**: Failure stress under UTM compression. |
+| **$y$** | Target | MPa | **Compressive Strength**: Failure stress under UTM compression. |
 
 ---
 
@@ -55,7 +55,7 @@ $$(X^T X)\beta = X^T y \quad \iff \quad A\beta = b$$
 * $X^T X$ compresses the $N$ observations into a symmetric, square $(4 \times 4)$ coefficient matrix ($A$).
 * $X^T y$ compresses the target values into a $(4 \times 1)$ column vector ($b$).
 * The unknown weight vector $\beta = [\beta_0, \beta_1, \beta_2, \beta_3]^T$ is solved directly by passing the augmented matrix $[X^T X \mid X^T y]$ into our custom Gauss-Jordan solver.
-* 
+
 ---
 
 ### 3. Scale-Aware Gauss-Jordan Elimination
@@ -63,7 +63,7 @@ The custom solver in `gauss_jordan.py` applies **Partial Pivoting** to maintain 
 
 * **Scale-Aware Singularity Check:** Because civil engineering data combines variables of drastically different scales (cement content $\sim 300\text{ kg/m}^3$ vs. $w/c$ ratio $\sim 0.4$), fixed absolute tolerances fail. The solver dynamically establishes a relative singularity threshold:
 
-$$\text{threshold} = \max(\text{tol} \times \max(\vert M \vert), 10^{-14}) \quad \text{where } \text{tol} = 10^{-10}$$
+$$\text{threshold} = \max(\text{tol} \times \max(\lvert M \rvert), 10^{-14}) \quad \text{where } \text{tol} = 10^{-10}$$
 
 If a pivot falls below this relative threshold, the system is rejected as singular or ill-conditioned.
 
@@ -72,10 +72,10 @@ If a pivot falls below this relative threshold, the system is rejected as singul
 ### 4. Statistical Inference & Custom Matrix Inversion
 To evaluate whether regression coefficients are statistically meaningful or merely artifacts of small-sample noise, the standard errors of $\beta$ are computed:
 
-$$\text{SE}(\beta) = \sqrt{\sigma^2 \cdot \text{diag}((X^T X)^{-1})}, \quad \text{where } \sigma^2 = \frac{\sum (y - \hat{y})^2}{N - p}$$
+$$\text{SE}(\beta) = \sqrt{\sigma^2 \cdot \text{diag}((X^T X)^{-1})}, \quad \text{where } \sigma^2 = \frac{\sum (y - \hat{y})^2}{N - k}$$
 
 * **No Library Inversion:** Rather than calling `np.linalg.inv`, the system computes $(X^T X)^{-1}$ using the custom Gauss-Jordan engine by solving $(X^T X)z_i = e_i$ for each standard unit basis vector $e_i$.
-* **Hypothesis Testing:** Two-tailed $t$-statistics ($t = \beta / \text{SE}$) and $p$-values are evaluated across $N - p$ degrees of freedom.
+* **Hypothesis Testing:** Two-tailed $t$-statistics ($t = \beta / \text{SE}$) and $p$-values are evaluated across $N - k$ degrees of freedom.
 
 ---
 
@@ -89,11 +89,11 @@ $$\text{SE}(\beta) = \sqrt{\sigma^2 \cdot \text{diag}((X^T X)^{-1})}, \quad \tex
 
 | Engineering Aspect | Initial Implementation | Revised & Verified Implementation |
 | :--- | :--- | :--- |
-| **Singularity Threshold** | Fixed absolute tolerance ($10^{-12}$). | Scale-aware relative tolerance ($\text{tol} \times \max(\vert M \vert)$) preventing false passes on ill-conditioned systems. |
+| **Singularity Threshold** | Fixed absolute tolerance ($10^{-12}$). | Scale-aware relative tolerance ($\text{tol} \times \max \lvert M \rvert$) preventing false passes on ill-conditioned systems. |
 | **Validation Rigor** | In-sample training fit labeled as "validation". | Added full **Leave-One-Out Cross-Validation (LOOCV)** as an independent accuracy check. |
 | **Statistical Inference** | Point estimates reported without uncertainty bounds. | Standard errors, $t$-statistics, degrees of freedom, and $p$-values derived via custom $(X^T X)^{-1}$. |
 | **Multicollinearity Checks** | Not assessed. | Automated Variance Inflation Factor (VIF) and pairwise correlation matrix computed pre-training. |
-| **Accuracy Metric** | Ad-hoc per-batch percentage. | Standardized $R^2$, $\text{MAE}$, $\text{RMSE}$, and $100\% - \text{MAPE}$. |
+| **Accuracy Metric** | Ad-hoc per-batch percentage. | Standardized $R^2$, MAE, RMSE, and $100\% - \text{MAPE}$. |
 | **Solver Correctness** | Asserted without external cross-check. | Independently verified against `numpy.linalg.solve` across multiple test matrices to 6 decimal places. |
 
 ---
@@ -105,10 +105,10 @@ Benchmarked using standard laboratory mix test observations ($N = 8$):
 
 | Performance Metric | In-Sample Training Fit | Leave-One-Out Cross-Validation (LOOCV) |
 | :--- | :--- | :--- |
-| **$R^2$ Score** | **$0.977$** | **$0.942$** (across 7 valid folds) |
-| **Mean Absolute Error (MAE)** | **$0.78\text{ MPa}$** | **$1.18\text{ MPa}$** |
-| **Root Mean Squared Error (RMSE)** | **$0.93\text{ MPa}$** | **$1.41\text{ MPa}$** |
-| **Average Accuracy ($100\% - \text{MAPE}$)** | **$97.63\%$** | **$96.34\%$** |
+| **$R^2$ Score** | **0.977** | **0.942** (across 7 valid folds) |
+| **Mean Absolute Error (MAE)** | **0.78 MPa** | **1.18 MPa** |
+| **Root Mean Squared Error (RMSE)** | **0.93 MPa** | **1.41 MPa** |
+| **Average Accuracy ($100\% - \text{MAPE}$)** | **97.63%** | **96.34%** |
 | **Interpretation** | Optimistic upper-bound fit. | Unbiased proxy for real-world field predictions. |
 
 > *Note on Numerical Conditioning:* Removing one batch during LOOCV revealed that 1 fold hit an ill-conditioned system ($X^T X$ pivot dropped to $\approx 7 \times 10^{-5}$). The solver identified and skipped this unstable fold, highlighting the sample-size limitation.
@@ -119,10 +119,10 @@ $$\text{Strength} = -5.99 + 0.1176(\text{Cement}) - 19.8648(w/c) + 0.5463(\text{
 
 | Coefficient | Parameter | Estimate | Std. Error | $t$-statistic | $p$-value | Significant ($p < 0.05$)? |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: |
-| **$\beta_0$** | Intercept | $-5.9894$ | $115.59$ | $-0.05$ | $0.961$ | No |
-| **$\beta_1$** | Cement ($\text{kg/m}^3$) | $+0.1176$ | $0.16$ | $+0.75$ | $0.495$ | No |
-| **$\beta_2$** | $w/c$ Ratio | $-19.8648$ | $142.65$ | $-0.14$ | $0.896$ | No |
-| **$\beta_3$** | Curing Age (Days) | $+0.5463$ | $0.075$ | $+7.30$ | **$0.002$** | **Yes (Statistically Meaningful)** |
+| **$\beta_0$** | Intercept | -5.9894 | 115.59 | -0.05 | 0.961 | No |
+| **$\beta_1$** | Cement (kg/m³) | +0.1176 | 0.16 | +0.75 | 0.495 | No |
+| **$\beta_2$** | $w/c$ Ratio | -19.8648 | 142.65 | -0.14 | 0.896 | No |
+| **$\beta_3$** | Curing Age (Days) | +0.5463 | 0.075 | +7.30 | **0.002** | **Yes (Statistically Meaningful)** |
 
 * **Engineering Takeaway:** Curing age is statistically distinguishable from zero ($p = 0.002$). While cement content and water-cement ratio conform to Abrams' Law directionally, a larger batch sample size is required to narrow their confidence intervals.
 
