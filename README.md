@@ -40,27 +40,9 @@ In engineering analysis and numerical computation, solving systems of linear equ
 ### 1. General System of Linear Equations
 A system of $n$ linear equations with $n$ unknown variables is expressed in matrix notation as:
 
-$$A x = b$$
+$$Ax = b$$
 
-$$\begin{bmatrix} 
-a_{11} & a_{12} & \cdots & a_{1n} \\
-a_{21} & a_{22} & \cdots & a_{2n} \\
-\vdots & \vdots & \dots & \vdots \\
-a_{n1} & a_{n2} & \cdots & a_{nn}
-\end{bmatrix}
-\begin{bmatrix} 
-x_1 \\
-x_2 \\
-\vdots \\
-x_n
-\end{bmatrix}
-=
-\begin{bmatrix} 
-b_1 \\
-b_2 \\
-\vdots \\
-b_n
-\end{bmatrix}$$
+$$\begin{bmatrix} a_{11} & a_{12} & \cdots & a_{1n} \\ a_{21} & a_{22} & \cdots & a_{2n} \\ \vdots & \vdots & \ddots & \vdots \\ a_{n1} & a_{n2} & \cdots & a_{nn} \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{bmatrix} = \begin{bmatrix} b_1 \\ b_2 \\ \vdots \\ b_n \end{bmatrix}$$
 
 The goal is to determine the unknown vector $x = [x_1, x_2, \dots, x_n]^T$ by reducing the augmented matrix $[A \mid b]$ into reduced row echelon form (RREF) $[I \mid x]$, where $I$ is the $n \times n$ identity matrix.
 
