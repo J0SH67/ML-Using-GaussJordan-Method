@@ -243,11 +243,3 @@ python gauss_jordan.py
 ```ng** | Records every intermediate matrix state and human-readable row operation formula. | Serves as an educational step-by-step calculation trace for verification. |
 | **Flexible System Sizing** | Dynamically scales from $2 \times 2$ up to $8 \times 8$ linear systems via interactive UI controls. | Accommodates a wide variety of structural and linear algebra problems. |
 
----
-
-## 🚀 Installation & How to Run
-
-### 1. Prerequisites
-Ensure Python 3.9 or higher is installed:
-```bash
-python --version
