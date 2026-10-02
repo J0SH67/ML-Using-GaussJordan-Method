@@ -35,7 +35,7 @@ def compute_vif(X, feature_names):
 # 1. PAGE SETUP & METADATA
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Civil Engineering Matrix & ML Solver",
+    page_title="System of Linear Equation Solver",
     page_icon="🏗️",
     layout="wide",
 )
@@ -188,7 +188,7 @@ with st.sidebar:
 st.markdown(
     """
     <div class="hero-banner">
-        <h2 style="margin: 0; color: #FFFFFF;">Concrete Compressive Strength Predictor & Linear Systems Solver</h2>
+        <h2 style="margin: 0; color: #FFFFFF;">System of Linear Equation Solver</h2>
         <p style="margin: 6px 0 10px 0; color: #DDD8F0;">
             Supervised Machine Learning via Custom Gauss-Jordan Elimination with Scale-Aware Partial Pivoting.
         </p>
