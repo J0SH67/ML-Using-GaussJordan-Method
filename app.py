@@ -205,7 +205,7 @@ st.markdown(
 )
 
 st.info(
-    "🚀 **Coming in the next update:** a Machine Learning module that will "
+    "**Coming in the next update:** a Machine Learning module that will "
     "**predict the compressive strength of concrete** from its mix "
     "proportions. Check the **Roadmap** tab for details."
 )
