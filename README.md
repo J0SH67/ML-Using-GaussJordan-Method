@@ -17,7 +17,7 @@ You can try the platform directly in your browser without local installation:
 ---
 
 ## 👨‍🏫 Course Instructor
-* **Engr. Sammuel Erespe**
+* **Engr. Samuel Erespe**
 
 ## 👥 Proponents & Contributors
 * **John Joshua D. Ilisan**
